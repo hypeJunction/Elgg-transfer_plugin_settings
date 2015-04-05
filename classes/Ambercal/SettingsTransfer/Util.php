@@ -83,32 +83,32 @@ class Util {
 			$id = $plugin->getID();
 			if (!isset($data[$id])) {
 				if ($modify_active && $id !== 'ambercal_settings_transfer') {
-					if ($plugin->isActive()) {
-						if (!$plugin->deactivate()) {
-							register_error($plugin->getID() . ' (deactivate): ' . $plugin->getError());
-							$error++;
-						}
-					}
-				}
-				if ($modify_priority) {
-					if (!$plugin->setPriority('first')) {
-						register_error($plugin->getID() . ' (set priority): ' . $plugin->getError());
+					if (!self::deactivatePlugin($id)) {
+						register_error($id . ' (deactivate): ' . $plugin->getError());
 						$error++;
 					}
 				}
+
+				if ($modify_priority) {
+					if (!$plugin->setPriority('first')) {
+						register_error($id . ' (set priority): ' . $plugin->getError());
+						$error++;
+					}
+				}
+
 				continue;
 			}
 
-			if ($modify_priority && isset($data[$id]['priority']) && is_int($data[$id]['prioririty'])) {
+			if ($modify_priority && isset($data[$id]['priority']) && is_int($data[$id]['priority'])) {
 				if (!$plugin->setPriority($data[$id]['priority'])) {
-					register_error($plugin->getID() . ' (set priority): ' . $plugin->getError());
+					register_error($id . ' (set priority): ' . $plugin->getError());
 					$error++;
 				}
 			}
 
 			if ($modify_settings && $unset_settings) {
 				if (count($plugin->getAllSettings()) && !$plugin->unsetAllSettings()) {
-					register_error($plugin->getID() . ' (unset all settings): ' . $plugin->getError());
+					register_error($id . ' (unset all settings): ' . $plugin->getError());
 					$error++;
 				}
 			}
@@ -127,29 +127,28 @@ class Util {
 							$new_value = $serialization($value['value']);
 						}
 					}
-					error_log(print_r($value, true));
-					error_log(print_r($new_value, true));
+
 					if (is_null($new_value)) {
-						register_error($plugin->getID() . ' (set setting): Can not parse new value for "' . $key . '"');
+						register_error($id . ' (set setting): Can not parse new value for "' . $key . '"');
 						$error++;
 						continue;
 					}
 					if (!$plugin->setSetting($key, $new_value)) {
-						register_error($plugin->getID() . ' (set setting): Unable to set new value for "' . $key . '"');
+						register_error($id . ' (set setting): Unable to set new value for "' . $key . '"');
 						$error++;
 					}
 				}
 			}
 
 			if ($modify_active && isset($data[$id]['active'])) {
-				if ($data[$id]['active'] && !$plugin->isActive()) {
-					if (!$plugin->activate()) {
-						register_error($plugin->getID() . ' (activate): ' . $plugin->getError());
+				if ($data[$id]['active']) {
+					if (!self::activatePlugin($id)) {
+						register_error($id . ' (activate): ' . $plugin->getError());
 						$error++;
 					}
-				} else if (!$data[$id]['active'] && $plugin->isActive()) {
-					if (!$plugin->deactivate()) {
-						register_error($plugin->getID() . ' (deactivate): ' . $plugin->getError());
+				} else if (!$data[$id]['active']) {
+					if (!self::deactivatePlugin($id)) {
+						register_error($id . ' (deactivate): ' . $plugin->getError());
 						$error++;
 					}
 				}
@@ -157,6 +156,121 @@ class Util {
 		}
 
 		return $error;
+	}
+
+	/**
+	 * Deactivate the plugin as well as any other plugin depending on it
+	 *
+	 * @param string $id Plugin ID
+	 * @return boolean
+	 */
+	public static function deactivatePlugin($id) {
+
+		$plugin = elgg_get_plugin_from_id($id);
+		if (!$plugin) {
+			return false;
+		}
+
+		if (!$plugin->isActive()) {
+			return true;
+		}
+
+		$result = true;
+		$dependants = array();
+
+		$plugins = elgg_get_plugins('active');
+		foreach ($plugins as $p) {
+			/** @var $dependent ElggPlugin */
+			$requires = $p->getManifest()->getRequires();
+			if (!empty($requires)) {
+				foreach ($requires as $require) {
+					if ($require['type'] == 'plugin' && $require['name'] == $id && !in_array($id, $dependants)) {
+						$dependants[] = $p->getID();
+					}
+				}
+			}
+		}
+		foreach ($dependants as $dependant) {
+			$result = self::deactivatePlugin($dependant);
+			if (!$result) {
+				break;
+			}
+		}
+
+		if (!$result) {
+			return false;
+		}
+
+		return $plugin->deactivate();
+	}
+
+	/**
+	 * Activate the plugin as well as all plugins required by it
+	 *
+	 * @param string $id Plugin ID
+	 * @return boolean
+	 */
+	public static function activatePlugin($id) {
+
+		if (!$id) {
+			return false;
+		}
+
+		$plugin = elgg_get_plugin_from_id($id);
+		if (!$plugin) {
+			$plugins = elgg_get_plugins('inactive');
+			foreach ($plugins as $p) {
+				/* @var $p ElggPlugin */
+
+				$manifest = $p->getManifest();
+				if (!$manifest) {
+					continue;
+				}
+
+				$provides = $manifest->getProvides();
+				if (!empty($provides)) {
+					foreach ($provides as $provide) {
+						if ($provide['type'] == 'plugin' && $provide['name'] == $id) {
+							$plugin = $p;
+							break;
+						}
+					}
+				}
+			}
+			if (!$plugin) {
+				return false;
+			}
+		}
+
+		if ($plugin->isActive()) {
+			return true;
+		}
+
+		$result = true;
+
+		$manifest = $plugin->getManifest();
+		if (!$manifest) {
+			return false;
+		}
+
+		$requires = $manifest->getRequires();
+
+		if (!empty($requires)) {
+			foreach ($requires as $require) {
+				if ($require['type'] == 'plugin') {
+					$result = self::activatePlugin($require['name']);
+					if (!$result) {
+						break;
+					}
+				}
+			}
+		}
+
+		if (!$result) {
+			return false;
+		}
+
+		return $plugin->activate();
 	}
 
 }
