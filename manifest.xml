@@ -3,7 +3,7 @@
 
 	<name>Plugin Settings Transfer</name>
 	<id>ambercal_settings_transfer</id>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<description>Easily transfer plugin settings between multiple Elgg installations</description>
 	<category>files</category>
