@@ -1,7 +1,5 @@
 <?php
 
-namespace Ambercal\SettingsTransfer;
-
 $options = array(
 	'active' => elgg_echo('admin:plugin_settings_transfer:import:active'),
 	'priority' => elgg_echo('admin:plugin_settings_transfer:import:priority'),

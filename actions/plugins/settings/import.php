@@ -1,6 +1,6 @@
 <?php
 
-namespace Ambercal\SettingsTransfer;
+use Ambercal\SettingsTransfer\Util;
 
 if (!isset($_FILES['json']['name']) || $_FILES['json']['error'] != UPLOAD_ERR_OK) {
 	$error = elgg_get_friendly_upload_error($_FILES['json']['error']);

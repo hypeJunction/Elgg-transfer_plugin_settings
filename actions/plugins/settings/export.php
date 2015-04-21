@@ -1,6 +1,6 @@
 <?php
 
-namespace Ambercal\SettingsTransfer;
+use Ambercal\SettingsTransfer\Util;
 
 $options = get_input('options', array());
 

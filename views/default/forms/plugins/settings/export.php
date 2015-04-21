@@ -1,7 +1,5 @@
 <?php
 
-namespace Ambercal\SettingsTransfer;
-
 $options = array(
 	'unserialize' => elgg_echo('admin:plugin_settings_transfer:export:unserialize'),
 		)
