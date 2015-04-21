@@ -4,7 +4,7 @@
  * @author Ismayil Khayredinov <ismayil.khayredinov@gmail.com>
  */
 
-elgg_register_classes(__DIR__ . '/lib/classes/');
+elgg_register_classes(__DIR__ . '/classes/');
 
 elgg_register_event_handler('pagesetup', 'system',  'ambercal_settings_transfer_pagesetup');
 elgg_register_event_handler('init', 'system', 'ambercal_settings_transfer_init');
