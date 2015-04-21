@@ -7,9 +7,7 @@
  * @author Ismayil Khayredinov <ismayil.khayredinov@gmail.com>
  */
 
-namespace Ambercal\SettingsTransfer;
-
-require_once __DIR__ . '/vendor/autoload.php';
+elgg_register_classes(__DIR__ . '/lib/classes/');
 
 elgg_register_event_handler('pagesetup', 'system', __NAMESPACE__ . '\\pagesetup');
 elgg_register_event_handler('init', 'system', __NAMESPACE__ . '\\init');

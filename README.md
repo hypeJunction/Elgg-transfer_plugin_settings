@@ -22,11 +22,3 @@ a development and a production instance with the same code base.
 
 The plugin has been commissioned and partially sponsored by Ambercal
 
-## Installation
-
-If downloading from GitHub:
-
-```sh
-# install dependencies
-composer install
-```
