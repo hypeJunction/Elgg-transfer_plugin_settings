@@ -1,3 +1,9 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/hypeJunction/Elgg-transfer_plugin_settings/compare/2.0.0...v2.0.1) (2019-06-05)
+
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/hypeJunction/Elgg-transfer_plugin_settings/compare/1.2.1...v2.0.0) (2019-06-05)
 
