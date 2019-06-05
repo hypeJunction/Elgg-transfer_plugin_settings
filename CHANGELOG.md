@@ -1,3 +1,13 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/hypeJunction/Elgg-transfer_plugin_settings/compare/1.2.1...v2.0.0) (2019-06-05)
+
+
+### Features
+
+* **releases:** upgrade for Elgg 3 ([772163c](https://github.com/hypeJunction/Elgg-transfer_plugin_settings/commit/772163c))
+
+
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://github.com/hypeJunction/Elgg-transfer_plugin_settings/compare/1.2.0...v1.2.1) (2017-01-10)
 
