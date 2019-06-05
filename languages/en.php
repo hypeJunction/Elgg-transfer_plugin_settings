@@ -1,7 +1,6 @@
 <?php
 
-return array(
-
+return [
 	'admin:plugin_settings_transfer' => 'Transfer Plugin Settings',
 	'admin:plugin_settings_transfer:import' => 'Import',
 	'admin:plugin_settings_transfer:import:file' => 'JSON file',
@@ -14,9 +13,8 @@ return array(
 	'admin:plugin_settings_transfer:import:error' => 'Import was completed, but %s errors have occurred',
 	'admin:plugin_settings_transfer:import:success' => 'Import was successful',
 	'admin:plugin_settings_transfer:import:result' => '%s : %s',
-	
+
 	'admin:plugin_settings_transfer:export' => 'Export',
 	'admin:plugin_settings_transfer:export:options' => 'Export Options',
 	'admin:plugin_settings_transfer:export:unserialize' => 'Unserialize settings encoded as JSON, or serialized with PHP (useful if you want to manually edit the values)',
-
-);
+];
